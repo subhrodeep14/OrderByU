@@ -1,19 +1,13 @@
-"use client";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import ThanksClient from "./thanks-client";
 
-export default function Thanks() {
-  const sp = useSearchParams();
-  const table = sp.get("table") ?? "T1";
+// Optional: disable static generation if desired
+// export const dynamic = "force-dynamic";
+
+export default function ThanksPage() {
   return (
-    <div className="min-h-[60vh] grid place-items-center p-4 bg-white text-black text-center">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Order placed 🎉</h1>
-        <p className="opacity-75">We’re preparing your food.</p>
-        <Link className="inline-block mt-4 underline" href={`/menu?table=${table}`}>
-          Back to Menu
-        </Link>
-      </div>
-    </div>
+    <Suspense fallback={<div className="min-h-[60vh] grid place-items-center">Loading...</div>}>
+      <ThanksClient />
+    </Suspense>
   );
 }
