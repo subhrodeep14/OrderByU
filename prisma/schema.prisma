@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String
+  items   MenuItem[]
+  createdAt DateTime @default(now())
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  priceCents  Int
+  imageUrl    String?
+  isAvailable Boolean   @default(true)
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime  @default(now())
+  orderItems  OrderItem[]
+}
+
+model Table {
+  id        String  @id @default(cuid())
+  label     String  @unique // e.g. "T1"
+  active    Boolean @default(true)
+  orders    Order[]
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  tableId    String
+  table      Table       @relation(fields: [tableId], references: [id])
+  status     OrderStatus @default(PENDING)
+  notes      String?
+  totalCents Int
+  items      OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  qty        Int
+  priceCents Int       // snapshot of item price
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  READY
+  SERVED
+  CANCELLED
+}
