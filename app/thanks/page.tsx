@@ -6,7 +6,7 @@ export default function Thanks() {
   const sp = useSearchParams();
   const table = sp.get("table") ?? "T1";
   return (
-    <div className="min-h-[60vh] grid place-items-center p-4 text-center">
+    <div className="min-h-[60vh] grid place-items-center p-4 bg-white text-black text-center">
       <div>
         <h1 className="text-2xl font-bold mb-2">Order placed 🎉</h1>
         <p className="opacity-75">We’re preparing your food.</p>
